@@ -74,3 +74,8 @@ con = DBI::dbConnect(
 
 df = dplyr::tbl(con, "raw_enron_data")
 
+# Make a df
+
+new <- df %>% 
+  collect()
+
