@@ -5,8 +5,6 @@ library(metagce)
 library(tidyverse)
 library(DBI)
 
-
-
 # Push data to BQ ---------------------------------------------------------
 
 enron = read_excel("andrea_ring_000_1_1.pst.0.xls")
