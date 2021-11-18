@@ -26,6 +26,9 @@ names(enron2)
 
 # could also do
 
+
+
+
 data <- enron2 %>%
   janitor::clean_names() %>%
   mutate(row_index= 1:n())
