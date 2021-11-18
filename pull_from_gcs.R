@@ -1,6 +1,10 @@
 library(googleCloudStorageR)
 options(httr_oauth_cache = FALSE)
 token = metagce::gce_token()
+# LOOK at 
+# https://cran.r-project.org/web/packages/googleCloudStorageR/vignettes/googleCloudStorageR.html
+# For more examples
+
 googleCloudStorageR::gcs_auth(token = token)
 
 ## get your project name from the API console
