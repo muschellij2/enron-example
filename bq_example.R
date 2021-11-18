@@ -1,28 +1,37 @@
+
 library(readxl)
 library(bigrquery)
 library(metagce)
 library(tidyverse)
 library(DBI)
-x = read_excel("andrea_ring_000_1_1.pst.0.xls")
+
+
+
+# Push data to BQ ---------------------------------------------------------
+
+enron = read_excel("andrea_ring_000_1_1.pst.0.xls")
+enron2 = read_excel("andrea_ring_000_1_1.pst.0.xls", col_names=FALSE)
+
 bq_auth()
 
 
 # review data
 
-names(x)
+names(enron2)
 
 # rename variables
 
-data <- x %>%
-  rename_with(~ paste0 ("Var", seq(1:37)))
+#data <- enron2 %>%
+#  rename_with(~ paste0 ("Var", seq(1:37)))
 
 # could also do
 
-# data <- x %>%
-# janitor::clean_names()
-
+data <- enron2 %>%
+  janitor::clean_names() %>%
+  mutate(row_index= 1:n())
 
 # get project
+
 project = metagce::gce_project()
 
 # create database name
@@ -58,13 +67,14 @@ bq_tbl = bigrquery::bq_table(project, dataset, table = table)
 if (!bigrquery::bq_table_exists(bq_tbl)) {
   bigrquery::bq_table_create(bq_tbl,
                              fields = bigrquery::as_bq_fields(data))
-
+  
   bigrquery::bq_table_upload(bq_tbl,
-                             values = data)
+                             values = data, fields = bigrquery::as_bq_fields(data))
 }
 
 
-# Read table into R
+
+# Read table into R -------------------------------------------------------
 
 con = DBI::dbConnect(
   bigrquery::bigquery(),
@@ -78,4 +88,9 @@ df = dplyr::tbl(con, "raw_enron_data")
 
 new <- df %>% 
   collect()
+
+r_and_d_only <- new[-c(1:17),]
+
+new[4:31, 16:20]
+
 
